@@ -14,7 +14,7 @@ namespace MultiWorkAPI.Brands.Dto
         public BrandStatus? Status { get; set; }
     }
     [AutoMapFrom(typeof(Brand))]
-    public class BrandListDto : EntityDto<long>, IHasCreationTime
+    public class BrandDto : EntityDto<long>, IHasCreationTime
     {
         public string Title { get; set; }
         public DateTime CreationTime { get; set; }

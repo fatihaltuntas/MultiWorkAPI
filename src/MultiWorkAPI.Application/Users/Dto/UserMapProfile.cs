@@ -3,9 +3,9 @@ using MultiWorkAPI.Authorization.Users;
 
 namespace MultiWorkAPI.Users.Dto
 {
-    public class UserMapProfile : Profile
+    public class BrandMapProfile : Profile
     {
-        public UserMapProfile()
+        public BrandMapProfile()
         {
             CreateMap<UserDto, User>();
             CreateMap<UserDto, User>()

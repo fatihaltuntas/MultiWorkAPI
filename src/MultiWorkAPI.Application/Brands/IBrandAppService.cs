@@ -11,7 +11,14 @@ namespace MultiWorkAPI.Brands
 {
     public interface IBrandAppService : IApplicationService
     {
-        ListResultDto<BrandListDto> GetAll(GetAllBrandsInput input);
+        ListResultDto<BrandDto> GetAll(GetAllBrandsInput input);
+        CreateBrandDto Create(CreateBrandDto createBrandDto);
+        BrandDto Get(long brandId);
+        UpdateBrandDto Update(UpdateBrandDto updateBrandDto);
+        
+        // bool[true yada false](Dışa dönüş tipi) Delete( Metoda atadığın isimI) long(Dışarıdan aldığım değer.)
+        bool Delete(long brandId);
 
     }
+
 }
