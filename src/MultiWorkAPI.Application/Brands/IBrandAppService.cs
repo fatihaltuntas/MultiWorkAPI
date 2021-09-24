@@ -19,6 +19,8 @@ namespace MultiWorkAPI.Brands
         // bool[true yada false](Dışa dönüş tipi) Delete( Metoda atadığın isimI) long(Dışarıdan aldığım değer.)
         bool Delete(long brandId);
 
+        ListResultDto<BrandDto> GetBrandsByStatus(BrandStatus status);
+
     }
 
 }

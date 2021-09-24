@@ -60,6 +60,13 @@ namespace MultiWorkAPI.Brands
             );
         }
 
+        public ListResultDto<BrandDto> GetBrandsByStatus(BrandStatus status)
+        {
+            var brandsstatus = _brandRepository.GetAll().Where(x => x.Status == status).ToList();
+            return new ListResultDto<BrandDto>(ObjectMapper.Map<List<BrandDto>>(brandsstatus));
+
+        }
+
         public UpdateBrandDto Update(UpdateBrandDto updateBrandDto)
         {
             var brandEntity = ObjectMapper.Map<Brand>(updateBrandDto);
