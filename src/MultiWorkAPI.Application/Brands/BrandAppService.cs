@@ -30,29 +30,5 @@ namespace MultiWorkAPI.Brands
                 ObjectMapper.Map<List<BrandListDto>>(brands)
             );
         }
-        public BrandListDto Get(long brandId)
-        {
-            var brand = _brandRepository.Get(brandId);
-            var brandDto = ObjectMapper.Map<BrandListDto>(brand);
-            return brandDto;
-        }
-        
-        public CreateAndUpdateBrandDto Create(CreateAndUpdateBrandDto brandDto)
-        {
-            var brand = ObjectMapper.Map<Brand>(brandDto);
-            _brandRepository.Insert(brand);
-            return brandDto;
-        }
-        public bool Delete(long id)
-        {
-            var brandEntity = _brandRepository.Get(id);
-            if(brandEntity != null)
-            {
-                _brandRepository.Delete(brandEntity);
-                return true;
-            }
-            return false;
-
-        }
     }
 }
