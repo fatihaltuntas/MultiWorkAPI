@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace MultiWorkAPI.ProductGroups
 {
     [Table("ProductGroup")]
-    public class ProductGroup: Entity<long>,IHasCreationTime
+    public class ProductGroup : Entity<long>, IHasCreationTime
     {
         [Required]
         public string Title { get; set; }
@@ -27,12 +27,15 @@ namespace MultiWorkAPI.ProductGroups
         {
             CreationTime = Clock.Now;
             Status = ProductGroupStatus.Waiting;
+           
         }
         public ProductGroup(string title)
             : this()
         {
             Title = title;
         }
+
+       
     }
 }
 
