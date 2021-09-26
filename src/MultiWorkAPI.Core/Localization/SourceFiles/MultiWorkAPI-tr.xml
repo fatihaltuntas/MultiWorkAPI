@@ -121,6 +121,13 @@
 		<text name="Status">Durum</text>
 		<text name="CreatedDate">Oluşturulma Tarihi</text>
 		<text name="ProductGroup">Ürün Grubu</text>
+		<text name="CreateNewProductGroup">Yeni Ürün Grubu</text>
+		<text name="Details">Detay</text>
+		<text name="EditProduct">Ürün Grubu Düzenle</text>
+		<text name="Title">İsim</text>		
+		<text name="BrandGroup">Marka Grubu</text>
+		
+		
 		<!--<text name="değişlken olacak alan">Görülmesi istenilen veri</text>-->
 	</texts>
 </localizationDictionary>

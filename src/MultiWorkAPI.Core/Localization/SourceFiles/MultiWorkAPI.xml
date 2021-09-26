@@ -121,5 +121,10 @@
 		<text name="Status">Status</text>
 		<text name="CreatedDate">Created Date</text>
 		<text name="ProductGroup">Producth Group</text>
+		<text name="CreateNewProductGroup">New Product Group</text>
+		<text name="Details">Detail</text>
+		<text name="EditProduct">Edit Product Group</text>
+		<text name="title">Title</text>
+		<text name="BrandGroup">Brand Group</text>
 	</texts>
 </localizationDictionary>
