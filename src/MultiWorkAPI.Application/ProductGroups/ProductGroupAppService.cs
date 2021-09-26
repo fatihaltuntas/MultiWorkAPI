@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MultiWorkAPI.ProductGroups
 {
-    public class ProductGroupAppService : AsyncCrudAppService<ProductGroup, ProductGroupDto, long, PagedResultRequestDto, CreateProductGroupDto, ProductGroupDto>, IProductGroupAppService
+    public class ProductGroupAppService : AsyncCrudAppService<ProductGroup, ProductGroupDto, long, PagedResultRequestDto, ProductGroupDto, ProductGroupDto>, IProductGroupAppService
     {
 
         private readonly IRepository<ProductGroup, long> _productGroupRepository;
@@ -26,6 +26,11 @@ namespace MultiWorkAPI.ProductGroups
         public override Task<PagedResultDto<ProductGroupDto>> GetAllAsync(PagedResultRequestDto input)
         {
             return base.GetAllAsync(input);
+        }
+
+        public override Task<ProductGroupDto> UpdateAsync(ProductGroupDto input)
+        {
+            return base.UpdateAsync(input);
         }
 
 

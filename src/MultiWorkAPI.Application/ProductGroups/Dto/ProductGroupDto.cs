@@ -15,8 +15,6 @@ namespace MultiWorkAPI.ProductGroups.Dto
     }
 
     [AutoMapFrom(typeof(ProductGroup))]
-
-
     public class ProductGroupDto : EntityDto<long>, IHasCreationTime
     {
         public string Title { get; set; }

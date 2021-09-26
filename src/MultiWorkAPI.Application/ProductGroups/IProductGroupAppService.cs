@@ -4,7 +4,7 @@ using MultiWorkAPI.ProductGroups.Dto;
 
 namespace MultiWorkAPI.ProductGroups
 {
-    public interface IProductGroupAppService : IAsyncCrudAppService<ProductGroupDto, long, PagedResultRequestDto, CreateProductGroupDto, ProductGroupDto>
+    public interface IProductGroupAppService : IAsyncCrudAppService<ProductGroupDto, long, PagedResultRequestDto, ProductGroupDto, ProductGroupDto>
     {
         //ListResultDto<ProductGroupDto> GetAll(GetAllGroupInput input);
         //CreateProductGroupDto Create(CreateProductGroupDto createProductGroupDto);

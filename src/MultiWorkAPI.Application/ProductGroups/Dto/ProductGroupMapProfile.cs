@@ -11,8 +11,7 @@ namespace MultiWorkAPI.ProductGroups.Dto
     {
         public ProductGroupMapProfile()
         {
-            CreateMap<CreateProductGroupDto, ProductGroup>();
-            CreateMap<UpdateProductGroupDto, ProductGroup>();
+            CreateMap<ProductGroupDto, ProductGroup>();
         }
     }
 }
