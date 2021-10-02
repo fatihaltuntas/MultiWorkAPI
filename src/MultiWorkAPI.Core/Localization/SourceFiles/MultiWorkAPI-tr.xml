@@ -129,10 +129,14 @@
 		<text name="ProductGroupStatus">Ürün Grubu Durumu</text>
 		<text name="Waiting">Bekleyen</text>
 		<text name="Accepted">Kabul Edilen</text>
-		<text name="Rejected">Reddedilmiş</text>
+		<text name="Rejected">Reddedilen</text>
+		<text name="Brand">Marka</text>
+		<text name="Brands">Markalar</text>
+		<text name="CreateNewBrand">Yeni Marka Oluştur</text>
 		
 
-		
+
+
 
 
 		<!--<text name="değişlken olacak alan">Görülmesi istenilen veri</text>-->

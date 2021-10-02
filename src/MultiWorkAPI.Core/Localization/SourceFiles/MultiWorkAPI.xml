@@ -130,5 +130,9 @@
 		<text name="Waiting">Waiting</text>
 		<text name="Accepted">Accepted</text>
 		<text name="Rejected">Rejected</text>
+		<text name="Brand">Brand</text>
+		<text name="Brands">Brands</text>
+		<text name="CreateNewBrand">Create New Brand</text>
+		
 	</texts>
 </localizationDictionary>
