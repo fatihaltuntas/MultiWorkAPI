@@ -28,7 +28,15 @@ namespace MultiWorkAPI.ProductGroups
         {
             return base.GetAllAsync(input);
         }
-        
+        [HttpPost]
+        public async Task<List<ProductGroupDto>> GetAllByActiveAsync(PagedResultRequestDto input)
+        {
+            var productGroupList = _productGroupRepository.GetAll().Where(x => x.Status == ProductGroupStatus.Accepted).ToList();
+            var productGroupListDto = ObjectMapper.Map<List<ProductGroupDto>>(productGroupList);
+            return productGroupListDto;
+          
+        }
+
 
         public override Task<ProductGroupDto> UpdateAsync(ProductGroupDto input)
         {
@@ -40,9 +48,9 @@ namespace MultiWorkAPI.ProductGroups
             }
             else
             {
-              throw new UserFriendlyException("Marka Adı Mevcut !");
+                throw new UserFriendlyException("Marka Adı Mevcut !");
             }
-                
+
         }
 
         public override Task<ProductGroupDto> CreateAsync(ProductGroupDto input)
@@ -57,8 +65,6 @@ namespace MultiWorkAPI.ProductGroups
                 throw new UserFriendlyException("Aynı Marka Kayıt Mevcut !");
             }
         }
-
     }
-
 
 }

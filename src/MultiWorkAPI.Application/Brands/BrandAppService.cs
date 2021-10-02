@@ -1,5 +1,6 @@
 ﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using Abp.Authorization;
 using Abp.Collections.Extensions;
 using Abp.Domain.Repositories;
 using Abp.UI;
@@ -21,12 +22,13 @@ namespace MultiWorkAPI.Brands
         {
             _brandRepository = brandRepository;
         }
-
+        [AbpAuthorize]
         [HttpPost]
         public override Task<PagedResultDto<BrandDto>> GetAllAsync(PagedResultRequestDto input)
         {
             return base.GetAllAsync(input);
         }
+       
         public override Task<BrandDto> UpdateAsync(BrandDto input)
         {
             var anySameNamebrand = _brandRepository.GetAll().Any(x => x.Title.ToUpper() == input.Title.ToUpper());

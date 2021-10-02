@@ -1,6 +1,8 @@
 ﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using MultiWorkAPI.ProductGroups.Dto;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MultiWorkAPI.ProductGroups
 {
@@ -14,6 +16,6 @@ namespace MultiWorkAPI.ProductGroups
         //bool Delete(long productGroupId);
         //ListResultDto<ProductGroupDto> GetProductGroupByStatus(ProductGroupStatus status);
         //ListResultDto<ProductGroupDto> GetProductGroupByCreatedUser(CreatedUserId createdUser);
-
+        Task<List<ProductGroupDto>> GetAllByActiveAsync(PagedResultRequestDto input);
     }
 }
