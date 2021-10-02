@@ -8,6 +8,7 @@ using Abp.UI;
 using Microsoft.AspNetCore.Mvc;
 using MultiWorkAPI.Brands.Dto;
 using MultiWorkAPI.ProductGroups;
+using MultiWorkAPI.ProductGroups.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,61 +21,48 @@ namespace MultiWorkAPI.Brands
     {
         private readonly IRepository<Brand, long> _brandRepository;
         private readonly IRepository<ProductGroupBrand, long> _productGroupBrandRepository;
+        private readonly IRepository<ProductGroup, long> _productGroupRepository;
 
-        public BrandAppService(IRepository<Brand, long> brandRepository, IRepository<ProductGroupBrand, long> productGroupBrandRepository) : base(brandRepository)
+
+        public BrandAppService(IRepository<Brand, long> brandRepository,
+            IRepository<ProductGroupBrand, long> productGroupBrandRepository,
+            IRepository<ProductGroup, long> productGroupRepository) : base(brandRepository)
         {
             _brandRepository = brandRepository;
             _productGroupBrandRepository = productGroupBrandRepository;
+            _productGroupRepository = productGroupRepository;
         }
+
+        public override async Task<BrandDto> GetAsync(EntityDto<long> input)
+        {
+            var productGroupIds = _productGroupBrandRepository.GetAll().Where(x => x.BrandId == input.Id).Select(x => x.ProductGroupId);
+            var productGroups = _productGroupRepository.GetAll().Where(x => productGroupIds.Contains(x.Id)).ToList();
+            var productGroupDtos = ObjectMapper.Map<List<ProductGroupDto>>(productGroups);
+            var brandDto = ObjectMapper.Map<BrandDto>(_brandRepository.Get(input.Id));
+            brandDto.SelectedProductGroups = productGroupDtos;
+            return brandDto;
+        }
+
         [AbpAuthorize]
         [HttpPost]
         public override Task<PagedResultDto<BrandDto>> GetAllAsync(PagedResultRequestDto input)
         {
             return base.GetAllAsync(input);
         }
-
-
-
-
-        //----------------------------------Update ------------------------------
-        // var anySameNamebrand = _brandRepository.GetAll().Any(x => x.Title.ToUpper() == input.Title.ToUpper());
-        //if (!anySameNamebrand)
-        //{
-        //    return base.UpdateAsync(input);
-        //}
-        //else
-        //{
-        //    throw new UserFriendlyException("Aynı isme sahip kayıt zaten mevcut!");
-        //}
         public override async Task<BrandDto> UpdateAsync(BrandDto input)
         {
             var anySameNamebrand = _brandRepository.GetAll().Any(x => x.Title.ToUpper() == input.Title.ToUpper());
             var brand = ObjectMapper.Map<Brand>(input);
             var brandId = await _brandRepository.InsertOrUpdateAndGetIdAsync(brand);
             if (!anySameNamebrand)
-            {                
+            {
                 if (brandId > 0)
                 {
-                    foreach (var productGroup in input.SelectedProductGroups)
-                    {
-                        _productGroupBrandRepository.Insert(new ProductGroupBrand()
-                        {
-                            BrandId = brandId,
-                            CreatedUserId = 0,
-                            CreationTime = Clock.Now,
-                            EditedUserId = 0,
-                            ProductGroupId = productGroup.Id,
-                            Status = ProductGroupBrandStatus.Accepted
-
-                        });
-                    }
+                    DeleteThenCreateProductGroupBrands(input.Id, input.SelectedProductGroups);
                 }
-                
-                //return MapToEntityDto(brand);
 
             }
             return MapToEntityDto(brand);
-           // return base.UpdateAsync(brand);
 
         }
         [AbpAuthorize]
@@ -82,25 +70,44 @@ namespace MultiWorkAPI.Brands
         {
             var brand = ObjectMapper.Map<Brand>(input);
             var brandId = await _brandRepository.InsertAndGetIdAsync(brand);
-            if (brandId >0)
+            if (brandId > 0)
             {
                 foreach (var productGroup in input.SelectedProductGroups)
                 {
                     _productGroupBrandRepository.Insert(new ProductGroupBrand()
                     {
                         BrandId = brandId,
-                        CreatedUserId=0,
-                        CreationTime=Clock.Now,
-                        EditedUserId=0,
-                        ProductGroupId=productGroup.Id,
-                        Status=ProductGroupBrandStatus.Accepted
+                        CreatedUserId = 0,
+                        CreationTime = Clock.Now,
+                        EditedUserId = 0,
+                        ProductGroupId = productGroup.Id,
+                        Status = ProductGroupBrandStatus.Accepted
 
                     });
 
                 }
             }
             return MapToEntityDto(brand);
-
+        }
+        private void DeleteThenCreateProductGroupBrands(long brandId, List<ProductGroupDto> productGroupDtos)
+        {
+            var addedProductGroupBrands = _productGroupBrandRepository.GetAll().Where(x => x.BrandId == brandId).ToList();
+            foreach (var item in addedProductGroupBrands)
+            {
+                _productGroupBrandRepository.Delete(item.Id);
+            }
+            foreach (var item in productGroupDtos)
+            {
+                _productGroupBrandRepository.InsertAsync(new ProductGroupBrand()
+                {
+                    BrandId = brandId,
+                    CreatedUserId = 0,
+                    CreationTime = Clock.Now,
+                    EditedUserId = 0,
+                    ProductGroupId = item.Id,
+                    Status = ProductGroupBrandStatus.Accepted
+                });
+            }
         }
     }
 
