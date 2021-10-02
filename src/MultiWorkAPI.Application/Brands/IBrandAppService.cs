@@ -13,7 +13,7 @@ namespace MultiWorkAPI.Brands
     public interface IBrandAppService : IAsyncCrudAppService<BrandDto, long, PagedResultRequestDto, BrandDto,BrandDto>
     {
 
-
+        Task<PagedResultDto<BrandDto>> Search(string keyword);
 
         //ListResultDto<BrandDto> GetAll(GetAllBrandsInput input);
         //CreateBrandDto Create(CreateBrandDto createBrandDto);

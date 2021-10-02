@@ -28,11 +28,11 @@ namespace MultiWorkAPI.ProductGroups
         {
             return base.GetAllAsync(input);
         }
-        
+
         [HttpGet]
         public List<ProductGroupDto> GetActiveProductGroups()
         {
-            var entityList =_productGroupRepository.GetAll().Where(x => x.Status == ProductGroupStatus.Accepted).ToList();
+            var entityList = _productGroupRepository.GetAll().Where(x => x.Status == ProductGroupStatus.Accepted).ToList();
             var listDto = ObjectMapper.Map<List<ProductGroupDto>>(entityList);
             return listDto;
         }
@@ -64,6 +64,19 @@ namespace MultiWorkAPI.ProductGroups
             {
                 throw new UserFriendlyException("Aynı Marka Kayıt Mevcut !");
             }
+        }
+
+        [HttpGet]
+        public async Task<PagedResultDto<ProductGroupDto>> Search(string keyword)
+        {
+            var productGroupQ = _productGroupRepository.GetAll();
+            productGroupQ = productGroupQ.Where(x => x.Title.ToLower().Contains(keyword.ToLower()));
+            var productGroupListDto = ObjectMapper.Map<List<ProductGroupDto>>(productGroupQ.ToList());
+            return new PagedResultDto<ProductGroupDto>()
+            {
+                Items = productGroupListDto,
+                TotalCount = productGroupListDto.Count
+            };
         }
     }
 

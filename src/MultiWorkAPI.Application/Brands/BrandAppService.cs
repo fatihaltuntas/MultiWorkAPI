@@ -43,6 +43,19 @@ namespace MultiWorkAPI.Brands
             return brandDto;
         }
 
+        [HttpGet]
+        public async Task<PagedResultDto<BrandDto>> Search(string keyword)
+        {
+            var brandQ = _brandRepository.GetAll();
+            brandQ = brandQ.Where(x => x.Title.ToLower().Contains(keyword.ToLower()));
+            var brandListDto = ObjectMapper.Map<List<BrandDto>>(brandQ.ToList());
+            return new PagedResultDto<BrandDto>()
+            {
+                Items = brandListDto,
+                TotalCount = brandListDto.Count
+            };
+        }
+
         [AbpAuthorize]
         [HttpPost]
         public override Task<PagedResultDto<BrandDto>> GetAllAsync(PagedResultRequestDto input)
@@ -109,6 +122,7 @@ namespace MultiWorkAPI.Brands
                 });
             }
         }
+    
     }
 
 }

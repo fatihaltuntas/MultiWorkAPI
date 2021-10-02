@@ -17,5 +17,6 @@ namespace MultiWorkAPI.ProductGroups
         //ListResultDto<ProductGroupDto> GetProductGroupByStatus(ProductGroupStatus status);
         //ListResultDto<ProductGroupDto> GetProductGroupByCreatedUser(CreatedUserId createdUser);
         List<ProductGroupDto> GetActiveProductGroups();
+        Task<PagedResultDto<ProductGroupDto>> Search(string keyword);
     }
 }
