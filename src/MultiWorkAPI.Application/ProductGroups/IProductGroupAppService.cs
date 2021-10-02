@@ -16,6 +16,6 @@ namespace MultiWorkAPI.ProductGroups
         //bool Delete(long productGroupId);
         //ListResultDto<ProductGroupDto> GetProductGroupByStatus(ProductGroupStatus status);
         //ListResultDto<ProductGroupDto> GetProductGroupByCreatedUser(CreatedUserId createdUser);
-        Task<List<ProductGroupDto>> GetAllByActiveAsync(PagedResultRequestDto input);
+        List<ProductGroupDto> GetActiveProductGroups();
     }
 }

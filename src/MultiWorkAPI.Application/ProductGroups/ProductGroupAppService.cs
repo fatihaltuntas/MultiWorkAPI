@@ -28,13 +28,13 @@ namespace MultiWorkAPI.ProductGroups
         {
             return base.GetAllAsync(input);
         }
-        [HttpPost]
-        public async Task<List<ProductGroupDto>> GetAllByActiveAsync(PagedResultRequestDto input)
+        
+        [HttpGet]
+        public List<ProductGroupDto> GetActiveProductGroups()
         {
-            var productGroupList = _productGroupRepository.GetAll().Where(x => x.Status == ProductGroupStatus.Accepted).ToList();
-            var productGroupListDto = ObjectMapper.Map<List<ProductGroupDto>>(productGroupList);
-            return productGroupListDto;
-          
+            var entityList =_productGroupRepository.GetAll().Where(x => x.Status == ProductGroupStatus.Accepted).ToList();
+            var listDto = ObjectMapper.Map<List<ProductGroupDto>>(entityList);
+            return listDto;
         }
 
 

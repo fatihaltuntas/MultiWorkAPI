@@ -7,7 +7,7 @@ namespace MultiWorkAPI.Brands.Dto
     {
         public BrandMapProfile()
         {
-            
+            CreateMap<BrandDto, Brand>();
         }
     }
 }
