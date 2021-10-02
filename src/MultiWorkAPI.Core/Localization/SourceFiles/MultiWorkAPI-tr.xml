@@ -126,8 +126,15 @@
 		<text name="EditProduct">Ürün Grubu Düzenle</text>
 		<text name="Title">İsim</text>		
 		<text name="BrandGroup">Marka Grubu</text>
+		<text name="ProductGroupStatus">Ürün Grubu Durumu</text>
+		<text name="Waiting">Bekleyen</text>
+		<text name="Accepted">Kabul Edilen</text>
+		<text name="Rejected">Reddedilmiş</text>
 		
+
 		
+
+
 		<!--<text name="değişlken olacak alan">Görülmesi istenilen veri</text>-->
 	</texts>
 </localizationDictionary>

@@ -126,5 +126,9 @@
 		<text name="EditProduct">Edit Product Group</text>
 		<text name="title">Title</text>
 		<text name="BrandGroup">Brand Group</text>
+		<text name="ProductGroupStatus">Product Group Status</text>
+		<text name="Waiting">Waiting</text>
+		<text name="Accepted">Accepted</text>
+		<text name="Rejected">Rejected</text>
 	</texts>
 </localizationDictionary>

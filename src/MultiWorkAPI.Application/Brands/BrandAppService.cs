@@ -1,79 +1,57 @@
-﻿using Abp.Application.Services.Dto;
+﻿using Abp.Application.Services;
+using Abp.Application.Services.Dto;
 using Abp.Collections.Extensions;
 using Abp.Domain.Repositories;
+using Abp.UI;
+using Microsoft.AspNetCore.Mvc;
 using MultiWorkAPI.Brands.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MultiWorkAPI.Brands
 {
-    public class BrandAppService : MultiWorkAPIAppServiceBase, IBrandAppService
+    public class BrandAppService : AsyncCrudAppService<Brand, BrandDto, long, PagedResultRequestDto, BrandDto, BrandDto>, IBrandAppService
     {
-        private readonly IRepository<Brand,long> _brandRepository;
+        private readonly IRepository<Brand, long> _brandRepository;
 
-        public BrandAppService(IRepository<Brand,long> brandRepository)
+        public BrandAppService(IRepository<Brand, long> brandRepository) : base(brandRepository)
         {
             _brandRepository = brandRepository;
         }
 
-        public CreateBrandDto Create(CreateBrandDto createBrandDto)
+        [HttpPost]
+        public override Task<PagedResultDto<BrandDto>> GetAllAsync(PagedResultRequestDto input)
         {
-            var brandEntity = ObjectMapper.Map<Brand>(createBrandDto);
-            _brandRepository.Insert(brandEntity);
-            return createBrandDto;
-         }
-
-        public bool Delete(long brandId)
+            return base.GetAllAsync(input);
+        }
+        public override Task<BrandDto> UpdateAsync(BrandDto input)
         {
-            var anyBrand = _brandRepository.GetAll().Any(x => x.Id == brandId);
-            if (anyBrand)
+            var anySameNamebrand = _brandRepository.GetAll().Any(x => x.Title.ToUpper() == input.Title.ToUpper());
+            if (!anySameNamebrand)
             {
-                _brandRepository.Delete(brandId);
-                return true;
+                return base.UpdateAsync(input);
             }
-
-            return false;
-            
+            else
+            {
+                throw new UserFriendlyException("Aynı isme sahip kayıt zaten mevcut!");
+            }
         }
 
-        //Bu methot brandId parametresi ile brandEntity si çekip ön tarafa BrandDto döner
-
-        public BrandDto Get(long brandId)
+        public override Task<BrandDto> CreateAsync(BrandDto input)
         {
-            Brand brandEntity = _brandRepository.Get(brandId);
-            BrandDto brandDto = ObjectMapper.Map<BrandDto>(brandEntity);
-            return brandDto;
-        }
-
-        public ListResultDto<BrandDto> GetAll(GetAllBrandsInput input)
-        {
-            var brands = _brandRepository
-                .GetAll()
-                .WhereIf(input.Status.HasValue, b => b.Status == input.Status.Value)
-                .OrderByDescending(b => b.CreationTime)
-                .ToList();
-
-            return new ListResultDto<BrandDto>(
-                ObjectMapper.Map<List<BrandDto>>(brands)
-            );
-        }
-
-        public ListResultDto<BrandDto> GetBrandsByStatus(BrandStatus status)
-        {
-            var brandsstatus = _brandRepository.GetAll().Where(x => x.Status == status).ToList();
-            return new ListResultDto<BrandDto>(ObjectMapper.Map<List<BrandDto>>(brandsstatus));
-
-        }
-
-        public UpdateBrandDto Update(UpdateBrandDto updateBrandDto)
-        {
-            var brandEntity = ObjectMapper.Map<Brand>(updateBrandDto);
-            _brandRepository.Update(brandEntity);
-            return updateBrandDto;
-        }
-
+            var anySameNameBrand = _brandRepository.GetAll().Any(x => x.Title.ToUpper() == input.Title.ToUpper());
+            if (anySameNameBrand)
+            {
+                return base.CreateAsync(input);
+            }
+            else
+            {
+                throw new UserFriendlyException("aynı isme sahip kayız zaten mevcut!");
+            }
+        }      
 
     }
 }
