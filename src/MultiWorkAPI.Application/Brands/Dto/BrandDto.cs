@@ -1,6 +1,7 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 using Abp.Domain.Entities.Auditing;
+using MultiWorkAPI.ProductGroups.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,5 +22,6 @@ namespace MultiWorkAPI.Brands.Dto
         public BrandStatus Status { get; set; }
         public long CreatedUserId { get; set; }
         public long EditedUserId { get; set; }
+        public List<ProductGroupDto> SelectedProductGroups { get; set; }
     }
 }
