@@ -4,6 +4,7 @@ using Abp.Collections.Extensions;
 using Abp.Domain.Repositories;
 using Abp.UI;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MultiWorkAPI.ProductGroups.Dto;
 using System;
 using System.Collections.Generic;
@@ -30,9 +31,9 @@ namespace MultiWorkAPI.ProductGroups
         }
 
         [HttpGet]
-        public List<ProductGroupDto> GetActiveProductGroups()
+        public async Task<List<ProductGroupDto>> GetActiveProductGroups()
         {
-            var entityList = _productGroupRepository.GetAll().Where(x => x.Status == ProductGroupStatus.Accepted).ToList();
+            var entityList = await _productGroupRepository.GetAll().Where(x => x.Status == ProductGroupStatus.Accepted).ToListAsync();
             var listDto = ObjectMapper.Map<List<ProductGroupDto>>(entityList);
             return listDto;
         }
@@ -40,10 +41,11 @@ namespace MultiWorkAPI.ProductGroups
 
         public override Task<ProductGroupDto> UpdateAsync(ProductGroupDto input)
         {
+            var existingProductGroup = _productGroupRepository.Get(input.Id);
             var anySameName = _productGroupRepository.GetAll().Any(x => x.Title.ToUpper() == input.Title.ToUpper());
-
-            if (!anySameName)
+            if (existingProductGroup.Title.ToLower() ==  input.Title.ToLower() || !anySameName)
             {
+                input.EditedUserId = AbpSession.UserId.Value;
                 return base.UpdateAsync(input);
             }
             else
@@ -55,14 +57,17 @@ namespace MultiWorkAPI.ProductGroups
 
         public override Task<ProductGroupDto> CreateAsync(ProductGroupDto input)
         {
-            var anySameName = _productGroupRepository.GetAll().Any(x => x.Title.ToUpper() == input.Title.ToUpper());
+            var anySameName = _productGroupRepository.GetAll().Any(x => x.Title.ToLower() == input.Title.ToLower());
+            
             if (!anySameName)
             {
+                input.CreatedUserId = AbpSession.UserId.Value;
+                input.EditedUserId = AbpSession.UserId.Value;
                 return base.CreateAsync(input);
             }
             else
             {
-                throw new UserFriendlyException("Aynı Marka Kayıt Mevcut !");
+                throw new UserFriendlyException("Girdiğiniz ürün grubu daha önceden kaydedilmiş.");
             }
         }
 
