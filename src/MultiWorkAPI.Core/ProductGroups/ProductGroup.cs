@@ -41,7 +41,7 @@ namespace MultiWorkAPI.ProductGroups
 
 public enum ProductGroupStatus : byte
 {
-    Waiting = 0,
-    Accepted = 1,
-    Rejected = 2
+    Waiting = 1,
+    Accepted = 2,
+    Rejected = 3
 }

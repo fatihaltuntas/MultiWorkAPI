@@ -6,6 +6,8 @@ using Abp.Domain.Repositories;
 using Abp.Timing;
 using Abp.UI;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MultiWorkAPI.Base.Dto;
 using MultiWorkAPI.Brands.Dto;
 using MultiWorkAPI.ProductGroups;
 using MultiWorkAPI.ProductGroups.Dto;
@@ -36,19 +38,23 @@ namespace MultiWorkAPI.Brands
         public override async Task<BrandDto> GetAsync(EntityDto<long> input)
         {
             var productGroupIds = _productGroupBrandRepository.GetAll().Where(x => x.BrandId == input.Id).Select(x => x.ProductGroupId);
-            var productGroups = _productGroupRepository.GetAll().Where(x => productGroupIds.Contains(x.Id)).ToList();
+            var productGroups = await _productGroupRepository.GetAll().Where(x => productGroupIds.Contains(x.Id)).ToListAsync();
             var productGroupDtos = ObjectMapper.Map<List<ProductGroupDto>>(productGroups);
-            var brandDto = ObjectMapper.Map<BrandDto>(_brandRepository.Get(input.Id));
+            var brandDto = ObjectMapper.Map<BrandDto>(await _brandRepository.GetAsync(input.Id));
             brandDto.SelectedProductGroups = productGroupDtos;
             return brandDto;
         }
 
-        [HttpGet]
-        public async Task<PagedResultDto<BrandDto>> Search(string keyword)
+        [HttpPost]
+        public async Task<PagedResultDto<BrandDto>> Filter(BaseFilterRequestDto request)
         {
             var brandQ = _brandRepository.GetAll();
-            brandQ = brandQ.Where(x => x.Title.ToLower().Contains(keyword.ToLower()));
-            var brandListDto = ObjectMapper.Map<List<BrandDto>>(brandQ.ToList());
+            if(!string.IsNullOrEmpty(request.SearchWord))
+                brandQ = brandQ.Where(x => x.Title.ToLower().Contains(request.SearchWord.ToLower()));
+            if (request.Status > 0)
+                brandQ = brandQ.Where(x => x.Status == (BrandStatus)request.Status);
+
+            var brandListDto = ObjectMapper.Map<List<BrandDto>>(await brandQ.ToListAsync());
             return new PagedResultDto<BrandDto>()
             {
                 Items = brandListDto,
@@ -58,9 +64,9 @@ namespace MultiWorkAPI.Brands
 
         [AbpAuthorize]
         [HttpPost]
-        public override Task<PagedResultDto<BrandDto>> GetAllAsync(PagedResultRequestDto input)
+        public async override Task<PagedResultDto<BrandDto>> GetAllAsync(PagedResultRequestDto input)
         {
-            return base.GetAllAsync(input);
+            return await base.GetAllAsync(input);
         }
         public override async Task<BrandDto> UpdateAsync(BrandDto input)
         {
