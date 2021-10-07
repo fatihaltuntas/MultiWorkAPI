@@ -5,6 +5,7 @@ using Abp.Domain.Repositories;
 using Abp.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MultiWorkAPI.Base.Dto;
 using MultiWorkAPI.ProductGroups.Dto;
 using System;
 using System.Collections.Generic;
@@ -25,9 +26,9 @@ namespace MultiWorkAPI.ProductGroups
         }
 
         [HttpPost]
-        public override Task<PagedResultDto<ProductGroupDto>> GetAllAsync(PagedResultRequestDto input)
+        public async override Task<PagedResultDto<ProductGroupDto>> GetAllAsync(PagedResultRequestDto input)
         {
-            return base.GetAllAsync(input);
+            return await base.GetAllAsync(input);
         }
 
         [HttpGet]
@@ -39,14 +40,14 @@ namespace MultiWorkAPI.ProductGroups
         }
 
 
-        public override Task<ProductGroupDto> UpdateAsync(ProductGroupDto input)
+        public async override Task<ProductGroupDto> UpdateAsync(ProductGroupDto input)
         {
             var existingProductGroup = _productGroupRepository.Get(input.Id);
             var anySameName = _productGroupRepository.GetAll().Any(x => x.Title.ToUpper() == input.Title.ToUpper());
             if (existingProductGroup.Title.ToLower() ==  input.Title.ToLower() || !anySameName)
             {
                 input.EditedUserId = AbpSession.UserId.Value;
-                return base.UpdateAsync(input);
+                return await base.UpdateAsync(input);
             }
             else
             {
@@ -55,7 +56,7 @@ namespace MultiWorkAPI.ProductGroups
 
         }
 
-        public override Task<ProductGroupDto> CreateAsync(ProductGroupDto input)
+        public async override Task<ProductGroupDto> CreateAsync(ProductGroupDto input)
         {
             var anySameName = _productGroupRepository.GetAll().Any(x => x.Title.ToLower() == input.Title.ToLower());
             
@@ -63,7 +64,7 @@ namespace MultiWorkAPI.ProductGroups
             {
                 input.CreatedUserId = AbpSession.UserId.Value;
                 input.EditedUserId = AbpSession.UserId.Value;
-                return base.CreateAsync(input);
+                return await base.CreateAsync(input);
             }
             else
             {
@@ -71,12 +72,17 @@ namespace MultiWorkAPI.ProductGroups
             }
         }
 
-        [HttpGet]
-        public async Task<PagedResultDto<ProductGroupDto>> Search(string keyword)
+        [HttpPost]
+        public async Task<PagedResultDto<ProductGroupDto>> Filter(BaseFilterRequestDto request)
         {
             var productGroupQ = _productGroupRepository.GetAll();
-            productGroupQ = productGroupQ.Where(x => x.Title.ToLower().Contains(keyword.ToLower()));
-            var productGroupListDto = ObjectMapper.Map<List<ProductGroupDto>>(productGroupQ.ToList());
+
+            if (!string.IsNullOrEmpty(request.SearchWord))
+                productGroupQ = productGroupQ.Where(x => x.Title.ToLower().Contains(request.SearchWord.ToLower()));
+            if(request.Status > 0)
+                productGroupQ = productGroupQ.Where(x => x.Status == (ProductGroupStatus)request.Status);
+
+            var productGroupListDto = ObjectMapper.Map<List<ProductGroupDto>>(await productGroupQ.ToListAsync());
             return new PagedResultDto<ProductGroupDto>()
             {
                 Items = productGroupListDto,

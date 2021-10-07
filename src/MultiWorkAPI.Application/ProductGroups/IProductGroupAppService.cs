@@ -1,5 +1,6 @@
 ﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using MultiWorkAPI.Base.Dto;
 using MultiWorkAPI.ProductGroups.Dto;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,6 +18,6 @@ namespace MultiWorkAPI.ProductGroups
         //ListResultDto<ProductGroupDto> GetProductGroupByStatus(ProductGroupStatus status);
         //ListResultDto<ProductGroupDto> GetProductGroupByCreatedUser(CreatedUserId createdUser);
         Task<List<ProductGroupDto>> GetActiveProductGroups();
-        Task<PagedResultDto<ProductGroupDto>> Search(string keyword);
+        Task<PagedResultDto<ProductGroupDto>> Filter(BaseFilterRequestDto request);
     }
 }
