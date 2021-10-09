@@ -19,10 +19,13 @@ namespace MultiWorkAPI.ProductGroups
     {
 
         private readonly IRepository<ProductGroup, long> _productGroupRepository;
+        private readonly IRepository<ProductGroupBrand, long> _productGroupBrandRepository;
 
-        public ProductGroupAppService(IRepository<ProductGroup, long> productGroupRepository) : base(productGroupRepository)
+        public ProductGroupAppService(IRepository<ProductGroup, long> productGroupRepository, IRepository<ProductGroupBrand,
+            long> productGroupBrandRepository) : base(productGroupRepository)
         {
             _productGroupRepository = productGroupRepository;
+            _productGroupBrandRepository = productGroupBrandRepository;
         }
 
         [HttpPost]
@@ -88,6 +91,14 @@ namespace MultiWorkAPI.ProductGroups
                 Items = productGroupListDto,
                 TotalCount = productGroupListDto.Count
             };
+        }
+
+        [HttpGet]
+        public async Task<List<ProductGroupDto>> GetProductGroupsByBrandId(long brandId)
+        {
+            var productGroupIds =_productGroupBrandRepository.GetAll().Where(x => x.BrandId == brandId).Select(x => x.ProductGroupId);
+            var productGroupEntityList = await _productGroupRepository.GetAll().Where(x => productGroupIds.Contains(x.Id) && x.Status == ProductGroupStatus.Accepted).ToListAsync();
+            return ObjectMapper.Map<List<ProductGroupDto>>(productGroupEntityList);
         }
     }
 

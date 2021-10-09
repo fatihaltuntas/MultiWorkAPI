@@ -49,7 +49,7 @@ namespace MultiWorkAPI.Brands
         public async Task<PagedResultDto<BrandDto>> Filter(BaseFilterRequestDto request)
         {
             var brandQ = _brandRepository.GetAll();
-            if(!string.IsNullOrEmpty(request.SearchWord))
+            if (!string.IsNullOrEmpty(request.SearchWord))
                 brandQ = brandQ.Where(x => x.Title.ToLower().Contains(request.SearchWord.ToLower()));
             if (request.Status > 0)
                 brandQ = brandQ.Where(x => x.Status == (BrandStatus)request.Status);
@@ -73,13 +73,9 @@ namespace MultiWorkAPI.Brands
             var anySameNamebrand = _brandRepository.GetAll().Any(x => x.Title.ToUpper() == input.Title.ToUpper());
             var brand = ObjectMapper.Map<Brand>(input);
             var brandId = await _brandRepository.InsertOrUpdateAndGetIdAsync(brand);
-            if (!anySameNamebrand)
+            if (brandId > 0)
             {
-                if (brandId > 0)
-                {
-                    DeleteThenCreateProductGroupBrands(input.Id, input.SelectedProductGroups);
-                }
-
+                DeleteThenCreateProductGroupBrands(input.Id, input.SelectedProductGroups);
             }
             return MapToEntityDto(brand);
 
@@ -128,7 +124,15 @@ namespace MultiWorkAPI.Brands
                 });
             }
         }
-    
+
+        [HttpGet]
+        public async Task<List<BrandDto>> GetActiveBrands()
+        {
+            var entityList = await _brandRepository.GetAll().Where(x => x.Status == BrandStatus.Accepted).ToListAsync();
+            var listDto = ObjectMapper.Map<List<BrandDto>>(entityList);
+            return listDto;
+        }
+
     }
 
 }

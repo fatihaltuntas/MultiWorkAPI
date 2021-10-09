@@ -14,6 +14,7 @@ namespace MultiWorkAPI.Brands
     public interface IBrandAppService : IAsyncCrudAppService<BrandDto, long, PagedResultRequestDto, BrandDto,BrandDto>
     {
         Task<PagedResultDto<BrandDto>> Filter(BaseFilterRequestDto request);
+        Task<List<BrandDto>> GetActiveBrands();
     }
 
 }
