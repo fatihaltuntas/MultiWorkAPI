@@ -7,6 +7,9 @@ using MultiWorkAPI.Brands;
 using MultiWorkAPI.ProductGroups;
 using MultiWorkAPI.Models;
 
+using MultiWorkAPI.ProductItems;
+using MultiWorkAPI.Models;
+
 namespace MultiWorkAPI.EntityFrameworkCore
 {
     public class MultiWorkAPIDbContext : AbpZeroDbContext<Tenant, Role, User, MultiWorkAPIDbContext>
@@ -15,7 +18,8 @@ namespace MultiWorkAPI.EntityFrameworkCore
         public DbSet<Brand> Brands { get; set; }
         public DbSet<ProductGroup> ProductGroup { get; set; }
         public DbSet<ProductGroupBrand> ProductGroupBrand { get; set; }
-        public DbSet<Model> Model{ get; set; }
+        public DbSet<Model> Models { get; set; }
+        public DbSet<ProductItem> ProductItems { get; set; }
 
         public MultiWorkAPIDbContext(DbContextOptions<MultiWorkAPIDbContext> options)
             : base(options)
