@@ -1,18 +1,18 @@
-﻿using Abp.Application.Services;//
-using Abp.Application.Services.Dto;//
-using Abp.Collections.Extensions;//
-using Abp.Domain.Repositories;//
-using Abp.UI;//
-using Microsoft.AspNetCore.Mvc;//
-using Microsoft.EntityFrameworkCore;//
+﻿using Abp.Application.Services;
+using Abp.Application.Services.Dto;
+using Abp.Collections.Extensions;
+using Abp.Domain.Repositories;
+using Abp.UI;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MultiWorkAPI.Base.Dto;
-using MultiWorkAPI.Model;// araştırılacak
-using MultiWorkAPI.Models.Dto;//
-using System;//
-using System.Collections.Generic;//
-using System.Linq;//
-using System.Text;//
-using System.Threading.Tasks;//
+using MultiWorkAPI.Model;
+using MultiWorkAPI.Models.Dto;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using static MultiWorkAPI.Models.Model;
 
 namespace MultiWorkAPI.Models

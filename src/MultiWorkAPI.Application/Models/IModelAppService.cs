@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MultiWorkAPI.Model
 {
-    public interface IModelAppService : IAsyncCrudAppService<ModelDto,long,PagedResultRequestDto,ModelDto,ModelDto>
+    public interface IModelAppService : IAsyncCrudAppService<ModelDto, long, PagedResultRequestDto, ModelDto, ModelDto>
     {
         Task<PagedResultDto<ModelDto>> Filter(BaseFilterRequestDto request);
     }

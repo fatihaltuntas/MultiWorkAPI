@@ -1714,6 +1714,55 @@ namespace MultiWorkAPI.Migrations
                     b.ToTable("ProductGroupBrand");
                 });
 
+            modelBuilder.Entity("MultiWorkAPI.ProductItems.ProductItem", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Barcode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("BrandId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("EditedUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ModelId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("ProductGroupId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("SerialNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductItems");
+                });
+
             modelBuilder.Entity("Abp.Application.Features.EditionFeatureSetting", b =>
                 {
                     b.HasBaseType("Abp.Application.Features.FeatureSetting");
