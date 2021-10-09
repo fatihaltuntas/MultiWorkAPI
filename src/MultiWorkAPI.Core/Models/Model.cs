@@ -24,6 +24,9 @@ namespace MultiWorkAPI.Models
         public long EditedUserId { get; set; }
         [Required]
         public long BrandId { get; set; }
+        [Required]
+        public long ProductGroupId { get; set; }
+
         public Model()
         {
             CreationTime = Clock.Now;

@@ -5,6 +5,7 @@ using MultiWorkAPI.Authorization.Users;
 using MultiWorkAPI.MultiTenancy;
 using MultiWorkAPI.Brands;
 using MultiWorkAPI.ProductGroups;
+using MultiWorkAPI.Models;
 
 namespace MultiWorkAPI.EntityFrameworkCore
 {
@@ -14,6 +15,7 @@ namespace MultiWorkAPI.EntityFrameworkCore
         public DbSet<Brand> Brands { get; set; }
         public DbSet<ProductGroup> ProductGroup { get; set; }
         public DbSet<ProductGroupBrand> ProductGroupBrand { get; set; }
+        public DbSet<Model> Model{ get; set; }
 
         public MultiWorkAPIDbContext(DbContextOptions<MultiWorkAPIDbContext> options)
             : base(options)

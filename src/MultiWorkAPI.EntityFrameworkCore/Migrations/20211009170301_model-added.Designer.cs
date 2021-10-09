@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MultiWorkAPI.EntityFrameworkCore;
 
 namespace MultiWorkAPI.Migrations
 {
     [DbContext(typeof(MultiWorkAPIDbContext))]
-    partial class MultiWorkAPIDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211009170301_model-added")]
+    partial class modeladded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1576,9 +1578,6 @@ namespace MultiWorkAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<long>("EditedUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ProductGroupId")
                         .HasColumnType("bigint");
 
                     b.Property<byte>("Status")

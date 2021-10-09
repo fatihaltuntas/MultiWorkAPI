@@ -5,6 +5,7 @@ using Abp.Domain.Repositories;//
 using Abp.UI;//
 using Microsoft.AspNetCore.Mvc;//
 using Microsoft.EntityFrameworkCore;//
+using MultiWorkAPI.Base.Dto;
 using MultiWorkAPI.Model;// araştırılacak
 using MultiWorkAPI.Models.Dto;//
 using System;//
@@ -24,21 +25,11 @@ namespace MultiWorkAPI.Models
         {
             _modelRepository = modelRepository;
         }
-
-        //public Task DeleteAsync(EntityDto<long> input)
-        //{
-        //    throw new NotImplementedException();
-        //}
         [HttpPost]
         public override Task<PagedResultDto<ModelDto>> GetAllAsync(PagedResultRequestDto input)
         {
             return base.GetAllAsync(input);
         }
-
-        //public override Task<ModelDto> GetAsync(EntityDto<long> input)
-        //{
-        //    return base.GetAsync(input);
-        //}
 
         public override Task<ModelDto> UpdateAsync(ModelDto input)
         {
@@ -54,6 +45,7 @@ namespace MultiWorkAPI.Models
                 throw new UserFriendlyException("Aynı Model Adı Mevcut !");
             }
         }
+
         public override Task<ModelDto> CreateAsync(ModelDto input)
         {
             var anySameName = _modelRepository.GetAll().Any(x => x.Title.ToLower() == input.Title.ToLower());
@@ -69,20 +61,6 @@ namespace MultiWorkAPI.Models
             }
         }
 
-
-        [HttpGet]
-        public async Task<PagedResultDto<ModelDto>> Search(string keyword)
-        {
-            var modelQ = _modelRepository.GetAll();
-            modelQ = modelQ.Where(x => x.Title.ToLower().Contains(keyword.ToLower()));
-            var modelListDto = ObjectMapper.Map<List<ModelDto>>(modelQ.ToList());
-            return new PagedResultDto<ModelDto>()
-            {
-                Items = modelListDto,
-                TotalCount = modelListDto.Count
-            };
-        }
-
         [HttpGet]
         public async Task<List<ModelDto>> GetActiveModel()
         {
@@ -91,25 +69,21 @@ namespace MultiWorkAPI.Models
             return modelListDto;
         }
 
+        [HttpPost]
+        public async Task<PagedResultDto<ModelDto>> Filter(BaseFilterRequestDto request)
+        {
+            var brandQ = _modelRepository.GetAll();
+            if (!string.IsNullOrEmpty(request.SearchWord))
+                brandQ = brandQ.Where(x => x.Title.ToLower().Contains(request.SearchWord.ToLower()));
+            if (request.Status > 0)
+                brandQ = brandQ.Where(x => x.Status == (ModelStatus)request.Status);
 
-
-
-
-
-
-
-
-
-
-
-
-        //Task<ModelDto> IAsyncCrudAppService<ModelDto, long, PagedResultRequestDto, ModelDto, ModelDto, EntityDto<long>, EntityDto<long>>.CreateAsync(ModelDto input)
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //Task<ModelDto> IAsyncCrudAppService<ModelDto, long, PagedResultRequestDto, ModelDto, ModelDto, EntityDto<long>, EntityDto<long>>.UpdateAsync(ModelDto input)
-        //{
-        //    throw new NotImplementedException();
-        //}
+            var brandListDto = ObjectMapper.Map<List<ModelDto>>(await brandQ.ToListAsync());
+            return new PagedResultDto<ModelDto>()
+            {
+                Items = brandListDto,
+                TotalCount = brandListDto.Count
+            };
+        }
     }
 }

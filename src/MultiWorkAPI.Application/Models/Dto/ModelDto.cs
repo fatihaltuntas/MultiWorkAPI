@@ -22,11 +22,9 @@ namespace MultiWorkAPI.Models.Dto
         public string Title { get; set; }
         public DateTime CreationTime { get; set; }
         public ModelStatus Status { get; set; }
-        
         public long CreatedUserId { get; set; }
-      
         public long EditedUserId { get; set; }
-
         public long BrandId { get; set; }
+        public long ProductGroupId { get; set; }
     }
 }
