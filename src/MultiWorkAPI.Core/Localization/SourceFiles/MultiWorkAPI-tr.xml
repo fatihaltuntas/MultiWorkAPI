@@ -133,7 +133,16 @@
 		<text name="Brand">Marka</text>
 		<text name="Brands">Markalar</text>
 		<text name="CreateNewBrand">Yeni Marka Oluştur</text>
+		<text name="CreateNewModel">Yeni Model Oluştur</text>
+		<text name="ModelStatus">Durum</text>
+		<text name="BrandStatus">Durum</text>
+		<text name="EditBrand">Markayı Düzenle</text>
+		<text name="EditModel">Modeli Düzenle</text>
+		<text name="Models">Modeller</text>
 		
+
+
+
 
 
 

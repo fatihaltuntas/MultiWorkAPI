@@ -133,6 +133,14 @@
 		<text name="Brand">Brand</text>
 		<text name="Brands">Brands</text>
 		<text name="CreateNewBrand">Create New Brand</text>
+		<text name="CreateNewModel">Create New Model</text>		
+		<text name="ModelStatus">Status</text>
+		<text name="BrandStatus">Status</text>
+		<text name="EditBrand">Edit Brand</text>
+		<text name="EditModel">Edit Model</text>
+		<text name="Models">Models</text>
 		
+
+
 	</texts>
 </localizationDictionary>
