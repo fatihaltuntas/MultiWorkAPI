@@ -32,12 +32,17 @@ namespace MultiWorkAPI.ProductItems.Dto
         public long EditedUserId { get; set; }
         [Required]
         public long BrandId { get; set; }
+        public string BrandName { get; set; }
         [Required]
         public long ModelId { get; set; }
+        public string ModelName { get; set; }
         [Required]
         public long ProductGroupId { get; set; }
+        public string ProductGroupName { get; set; }
         [Required]
         public long UserId { get; set; }
         public string Note { get; set; }
+
+        
     }
 }

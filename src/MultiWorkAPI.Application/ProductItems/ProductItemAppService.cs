@@ -5,13 +5,16 @@ using Abp.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MultiWorkAPI.Base.Dto;
+using MultiWorkAPI.Brands;
 using MultiWorkAPI.Brands.Dto;
+using MultiWorkAPI.ProductGroups;
 using MultiWorkAPI.ProductItems.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static MultiWorkAPI.Models.Model;
 using static MultiWorkAPI.ProductItems.ProductItem;
 
 namespace MultiWorkAPI.ProductItems
@@ -19,6 +22,9 @@ namespace MultiWorkAPI.ProductItems
     public class ProductItemAppService : AsyncCrudAppService<ProductItem, ProductItemDto, long, PagedResultRequestDto, ProductItemDto, ProductItemDto>, IProductItemAppService
     {
         private readonly IRepository<ProductItem, long> _producItemrepository;
+        private readonly IRepository<ProductGroup, long> _productGroupRepository;
+        private readonly IRepository<Brand, long> _brandRepository;
+        private readonly IRepository<Models.Model, long> _modelRepository;
         public ProductItemAppService(IRepository<ProductItem, long> productItemsRepository) : base(productItemsRepository)
         {
             _producItemrepository = productItemsRepository;
@@ -68,6 +74,19 @@ namespace MultiWorkAPI.ProductItems
 
             productItemQ = productItemQ.OrderBy(x => x.Title);
             var productItemListDto = ObjectMapper.Map<List<ProductItemDto>>(await productItemQ.ToListAsync());
+
+            var productGroups = _productGroupRepository.GetAll().Where(x => x.Status == ProductGroupStatus.Accepted).ToList();
+            var brands = _brandRepository.GetAll().Where(x => x.Status == BrandStatus.Accepted).ToList();
+            var models = _modelRepository.GetAll().Where(x => x.Status == ModelStatus.Accepted).ToList();
+
+            foreach (var productItem in productItemListDto)
+            {
+                productItem.ProductGroupName = productGroups.FirstOrDefault(x => x.Id == productItem.ProductGroupId).Title;
+                productItem.BrandName = brands.FirstOrDefault(x => x.Id == productItem.BrandId).Title;
+                productItem.ModelName = models.FirstOrDefault(x => x.Id == productItem.ModelId).Title;
+            }
+           
+            
             return new PagedResultDto<ProductItemDto>()
             {
                 Items = productItemListDto,
