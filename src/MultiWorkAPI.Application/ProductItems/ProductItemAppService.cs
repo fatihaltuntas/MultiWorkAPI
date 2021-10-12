@@ -5,6 +5,7 @@ using Abp.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MultiWorkAPI.Base.Dto;
+using MultiWorkAPI.Brands.Dto;
 using MultiWorkAPI.ProductItems.Dto;
 using System;
 using System.Collections.Generic;
@@ -49,15 +50,21 @@ namespace MultiWorkAPI.ProductItems
             return base.CreateAsync(input);
         }
         [HttpPost]
-        public async Task<PagedResultDto<ProductItemDto>> Filter(BaseFilterRequestDto request)
+        public async Task<PagedResultDto<ProductItemDto>> Filter(ProductItemFilterRequestDto request)
         {
             var productItemQ = _producItemrepository.GetAll();
             if (!string.IsNullOrEmpty(request.SearchWord))
-
                 productItemQ = productItemQ.Where(x => x.SerialNumber.ToLower().Contains(request.SearchWord.ToLower()));
-
             if (request.Status > 0)
                 productItemQ = productItemQ.Where(x => x.Status == (ProductItemStatus)request.Status);
+            if (request.UserId > 0)
+                productItemQ = productItemQ.Where(x => x.UserId == request.UserId);
+            if (request.ProductGroupId > 0)
+                productItemQ = productItemQ.Where(x => x.ProductGroupId == request.ProductGroupId);
+            if (request.BrandId > 0)
+                productItemQ = productItemQ.Where(x => x.BrandId == request.BrandId);
+            if (request.ModelId > 0)
+                productItemQ = productItemQ.Where(x => x.ModelId == request.ModelId);
 
             productItemQ = productItemQ.OrderBy(x => x.Title);
             var productItemListDto = ObjectMapper.Map<List<ProductItemDto>>(await productItemQ.ToListAsync());
