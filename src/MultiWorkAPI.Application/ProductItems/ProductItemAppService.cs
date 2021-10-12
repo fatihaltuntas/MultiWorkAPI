@@ -25,9 +25,15 @@ namespace MultiWorkAPI.ProductItems
         private readonly IRepository<ProductGroup, long> _productGroupRepository;
         private readonly IRepository<Brand, long> _brandRepository;
         private readonly IRepository<Models.Model, long> _modelRepository;
-        public ProductItemAppService(IRepository<ProductItem, long> productItemsRepository) : base(productItemsRepository)
+        public ProductItemAppService(IRepository<ProductItem, long> productItemsRepository,
+            IRepository<ProductGroup, long> productGroupRepository,
+            IRepository<Brand, long> brandRepository,
+            IRepository<Models.Model, long> modelRepository) : base(productItemsRepository)
         {
             _producItemrepository = productItemsRepository;
+            _productGroupRepository = productGroupRepository;
+            _brandRepository = brandRepository;
+            _modelRepository = modelRepository;
         }
 
         [HttpPost]
