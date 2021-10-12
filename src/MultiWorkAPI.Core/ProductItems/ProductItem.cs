@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MultiWorkAPI.ProductItems
 {
-    [Table("ProductItems")]
+    [Table("ProductItem")]
     public class ProductItem : Entity<long>, IHasCreationTime
     {
 

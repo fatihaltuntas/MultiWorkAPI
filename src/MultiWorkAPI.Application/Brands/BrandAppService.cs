@@ -46,13 +46,20 @@ namespace MultiWorkAPI.Brands
         }
 
         [HttpPost]
-        public async Task<PagedResultDto<BrandDto>> Filter(BaseFilterRequestDto request)
+        public async Task<PagedResultDto<BrandDto>> Filter(BrandFilterRequestDto request)
         {
             var brandQ = _brandRepository.GetAll();
             if (!string.IsNullOrEmpty(request.SearchWord))
                 brandQ = brandQ.Where(x => x.Title.ToLower().Contains(request.SearchWord.ToLower()));
             if (request.Status > 0)
                 brandQ = brandQ.Where(x => x.Status == (BrandStatus)request.Status);
+            if(request.ProductGroupId > 0)
+            {
+                var brandIds = _productGroupBrandRepository.GetAll().Where(x => x.ProductGroupId == request.ProductGroupId).Select(x => x.BrandId);
+                brandQ = brandQ.Where(x => brandIds.Contains(x.Id));
+            }
+
+            brandQ = brandQ.OrderBy(x => x.Title);
 
             var brandListDto = ObjectMapper.Map<List<BrandDto>>(await brandQ.ToListAsync());
             return new PagedResultDto<BrandDto>()
@@ -70,7 +77,7 @@ namespace MultiWorkAPI.Brands
         }
         public override async Task<BrandDto> UpdateAsync(BrandDto input)
         {
-            var anySameNamebrand = _brandRepository.GetAll().Any(x => x.Title.ToUpper() == input.Title.ToUpper());
+            input.EditedUserId = AbpSession.UserId.Value;
             var brand = ObjectMapper.Map<Brand>(input);
             var brandId = await _brandRepository.InsertOrUpdateAndGetIdAsync(brand);
             if (brandId > 0)
@@ -78,11 +85,11 @@ namespace MultiWorkAPI.Brands
                 DeleteThenCreateProductGroupBrands(input.Id, input.SelectedProductGroups);
             }
             return MapToEntityDto(brand);
-
         }
         [AbpAuthorize]
         public override async Task<BrandDto> CreateAsync(BrandDto input)
         {
+            input.CreatedUserId = AbpSession.UserId.Value;
             var brand = ObjectMapper.Map<Brand>(input);
             var brandId = await _brandRepository.InsertAndGetIdAsync(brand);
             if (brandId > 0)
@@ -123,14 +130,6 @@ namespace MultiWorkAPI.Brands
                     Status = ProductGroupBrandStatus.Accepted
                 });
             }
-        }
-
-        [HttpGet]
-        public async Task<List<BrandDto>> GetActiveBrands()
-        {
-            var entityList = await _brandRepository.GetAll().Where(x => x.Status == BrandStatus.Accepted).ToListAsync();
-            var listDto = ObjectMapper.Map<List<BrandDto>>(entityList);
-            return listDto;
         }
 
     }

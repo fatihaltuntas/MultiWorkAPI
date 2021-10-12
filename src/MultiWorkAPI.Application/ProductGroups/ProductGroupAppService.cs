@@ -34,39 +34,26 @@ namespace MultiWorkAPI.ProductGroups
             return await base.GetAllAsync(input);
         }
 
-        [HttpGet]
-        public async Task<List<ProductGroupDto>> GetActiveProductGroups()
-        {
-            var entityList = await _productGroupRepository.GetAll().Where(x => x.Status == ProductGroupStatus.Accepted).ToListAsync();
-            var listDto = ObjectMapper.Map<List<ProductGroupDto>>(entityList);
-            return listDto;
-        }
-
-
         public async override Task<ProductGroupDto> UpdateAsync(ProductGroupDto input)
         {
             var existingProductGroup = _productGroupRepository.Get(input.Id);
             var anySameName = _productGroupRepository.GetAll().Any(x => x.Title.ToUpper() == input.Title.ToUpper());
-            if (existingProductGroup.Title.ToLower() ==  input.Title.ToLower() || !anySameName)
+            if (existingProductGroup.Title.ToLower() == input.Title.ToLower() || !anySameName)
             {
                 input.EditedUserId = AbpSession.UserId.Value;
                 return await base.UpdateAsync(input);
             }
-            else
-            {
-                throw new UserFriendlyException("Marka Adı Mevcut !");
-            }
+            throw new UserFriendlyException("Marka Adı Mevcut !");
 
         }
 
         public async override Task<ProductGroupDto> CreateAsync(ProductGroupDto input)
         {
             var anySameName = _productGroupRepository.GetAll().Any(x => x.Title.ToLower() == input.Title.ToLower());
-            
+
             if (!anySameName)
             {
                 input.CreatedUserId = AbpSession.UserId.Value;
-                input.EditedUserId = AbpSession.UserId.Value;
                 return await base.CreateAsync(input);
             }
             else
@@ -82,8 +69,10 @@ namespace MultiWorkAPI.ProductGroups
 
             if (!string.IsNullOrEmpty(request.SearchWord))
                 productGroupQ = productGroupQ.Where(x => x.Title.ToLower().Contains(request.SearchWord.ToLower()));
-            if(request.Status > 0)
+            if (request.Status > 0)
                 productGroupQ = productGroupQ.Where(x => x.Status == (ProductGroupStatus)request.Status);
+
+            productGroupQ = productGroupQ.OrderBy(x => x.Title);
 
             var productGroupListDto = ObjectMapper.Map<List<ProductGroupDto>>(await productGroupQ.ToListAsync());
             return new PagedResultDto<ProductGroupDto>()
@@ -96,7 +85,7 @@ namespace MultiWorkAPI.ProductGroups
         [HttpGet]
         public async Task<List<ProductGroupDto>> GetProductGroupsByBrandId(long brandId)
         {
-            var productGroupIds =_productGroupBrandRepository.GetAll().Where(x => x.BrandId == brandId).Select(x => x.ProductGroupId);
+            var productGroupIds = _productGroupBrandRepository.GetAll().Where(x => x.BrandId == brandId).Select(x => x.ProductGroupId);
             var productGroupEntityList = await _productGroupRepository.GetAll().Where(x => productGroupIds.Contains(x.Id) && x.Status == ProductGroupStatus.Accepted).ToListAsync();
             return ObjectMapper.Map<List<ProductGroupDto>>(productGroupEntityList);
         }

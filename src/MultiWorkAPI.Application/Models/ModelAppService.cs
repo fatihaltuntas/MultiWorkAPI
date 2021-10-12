@@ -6,6 +6,7 @@ using Abp.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MultiWorkAPI.Base.Dto;
+using MultiWorkAPI.Brands.Dto;
 using MultiWorkAPI.Model;
 using MultiWorkAPI.Models.Dto;
 using System;
@@ -52,7 +53,6 @@ namespace MultiWorkAPI.Models
             if (!anySameName)
             {
                 input.CreatedUserId = AbpSession.UserId.Value;
-                input.EditedUserId = AbpSession.UserId.Value;
                 return base.CreateAsync(input);
             }
             else
@@ -61,24 +61,18 @@ namespace MultiWorkAPI.Models
             }
         }
 
-        [HttpGet]
-        public async Task<List<ModelDto>> GetActiveModel()
-        {
-            var modelEntityList = await _modelRepository.GetAll().Where(x => x.Status == ModelStatus.Accepted).ToListAsync();
-            var modelListDto = ObjectMapper.Map<List<ModelDto>>(modelEntityList);
-            return modelListDto;
-        }
-
         [HttpPost]
-        public async Task<PagedResultDto<ModelDto>> Filter(BaseFilterRequestDto request)
+        public async Task<PagedResultDto<ModelDto>> Filter(ModelFilterRequestDto request)
         {
-            var brandQ = _modelRepository.GetAll();
+            var modelQ = _modelRepository.GetAll();
             if (!string.IsNullOrEmpty(request.SearchWord))
-                brandQ = brandQ.Where(x => x.Title.ToLower().Contains(request.SearchWord.ToLower()));
+                modelQ = modelQ.Where(x => x.Title.ToLower().Contains(request.SearchWord.ToLower()));
             if (request.Status > 0)
-                brandQ = brandQ.Where(x => x.Status == (ModelStatus)request.Status);
+                modelQ = modelQ.Where(x => x.Status == (ModelStatus)request.Status);
+            if (request.BrandId > 0)
+                modelQ = modelQ.Where(x => x.BrandId == request.BrandId);
 
-            var brandListDto = ObjectMapper.Map<List<ModelDto>>(await brandQ.ToListAsync());
+            var brandListDto = ObjectMapper.Map<List<ModelDto>>(await modelQ.ToListAsync());
             return new PagedResultDto<ModelDto>()
             {
                 Items = brandListDto,

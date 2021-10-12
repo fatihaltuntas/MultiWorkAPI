@@ -28,11 +28,11 @@ namespace MultiWorkAPI.ProductItems
         {
             return base.GetAllAsync(input);
         }
-        public override Task<ProductItemDto>UpdateAsync(ProductItemDto input)
+        public override Task<ProductItemDto> UpdateAsync(ProductItemDto input)
         {
             var existingProductItems = _producItemrepository.Get(input.Id);
             var anySameName = _producItemrepository.GetAll().Any(x => x.SerialNumber.ToUpper() == input.SerialNumber.ToUpper());
-            if (existingProductItems.SerialNumber.ToLower()==input.SerialNumber.ToLower()|| !anySameName)
+            if (existingProductItems.SerialNumber.ToLower() == input.SerialNumber.ToLower() || !anySameName)
             {
                 input.EditedUserId = AbpSession.UserId.Value;
                 return base.UpdateAsync(input);
@@ -42,24 +42,25 @@ namespace MultiWorkAPI.ProductItems
                 throw new UserFriendlyException("Aynı Seri Numaralı Ürün Mevcut !");
             }
         }
-        [HttpGet]
-        public async Task<List<ProductItemDto>> GetActiveModel()
+        [HttpPost]
+        public override Task<ProductItemDto> CreateAsync(ProductItemDto input)
         {
-            var productItemEntityList = await _producItemrepository.GetAll().Where(x => x.Status == ProductItemStatus.Stock).ToListAsync();
-            var productItemListDto = ObjectMapper.Map<List<ProductItemDto>>(productItemEntityList);
-            return productItemListDto;
+            input.CreationUserId = AbpSession.UserId.Value;
+            return base.CreateAsync(input);
         }
         [HttpPost]
-        public async Task<PagedResultDto<ProductItemDto>>Filter(BaseFilterRequestDto request)
+        public async Task<PagedResultDto<ProductItemDto>> Filter(BaseFilterRequestDto request)
         {
-            var brandQ = _producItemrepository.GetAll();
+            var productItemQ = _producItemrepository.GetAll();
             if (!string.IsNullOrEmpty(request.SearchWord))
-            
-                brandQ = brandQ.Where(x => x.SerialNumber.ToLower().Contains(request.SearchWord.ToLower()));
+
+                productItemQ = productItemQ.Where(x => x.SerialNumber.ToLower().Contains(request.SearchWord.ToLower()));
 
             if (request.Status > 0)
-                brandQ = brandQ.Where(x => x.Status == (ProductItemStatus)request.Status);
-            var productItemListDto = ObjectMapper.Map<List<ProductItemDto>>(await brandQ.ToListAsync());
+                productItemQ = productItemQ.Where(x => x.Status == (ProductItemStatus)request.Status);
+
+            productItemQ = productItemQ.OrderBy(x => x.Title);
+            var productItemListDto = ObjectMapper.Map<List<ProductItemDto>>(await productItemQ.ToListAsync());
             return new PagedResultDto<ProductItemDto>()
             {
                 Items = productItemListDto,
